@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="shortcut icon" href="Icon.ico" type="image/ico">
+		<script type="text/javascript" src = "Wive2D.js"></script>
+		<script type="text/javascript" src = "Network.js"></script>
+		<script type="text/javascript" src = "Wive2DInput.js"></script>
+		<script type="text/javascript" src = "Wive2DGUI.js"></script>
+		<script type="text/javascript" src = "EditorNetwork.js"></script>
+		<script type="text/javascript" src="jquery-1.12.0.min.js"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta http-equiv="viewport" content="width=device-width,user-scalable=no"/>
+
+	<title>Wive2D Engine</title>
+	</head>
+	
+<body id = "Game" onload = "Wive2D.SetFuncRender(Render);">
+
+<script type="text/javascript">
+
+var Engine = new Wive2D.Engine();
+var SceneGame = new Wive2D.Scene();
+var LayerGame= new Wive2D.Layer(window.innerWidth,window.innerHeight, -1003); 
+InitEditor();
+
+var Player = new Wive2D.Circle();
+Player.Position.Set(LayerGame.Width/2, LayerGame.Height/2);
+Player.Size.Set(20,3);
+Player.Box.Size.Set(40,40);
+
+var Text = new Wive2D.Text(LayerGame);
+
+var Wall = new Wive2D.Rect();
+Wall.Size.Set(20,LayerGame.Height-20);
+Wall.Position.Set(LayerGame.Width-20,LayerGame.Height/2);
+Wall.Box.Size.Set(20,LayerGame.Height-20);
+
+var Wall1 = new Wive2D.Rect();
+Wall1.Size.Set(20,LayerGame.Height-20);
+Wall1.Position.Set(20,LayerGame.Height/2);
+Wall1.Box.Size.Set(20,LayerGame.Height-20);
+
+var Wall2 = new Wive2D.Rect();
+Wall2.Size.Set(LayerGame.Width-20,20);
+Wall2.Position.Set(LayerGame.Width/2,20);
+Wall2.Box.Size.Set(LayerGame.Width-20,20);
+
+var Wall3 = new Wive2D.Rect();
+Wall3.Size.Set(LayerGame.Width-20,20);
+Wall3.Position.Set(LayerGame.Width/2,LayerGame.Height-20);
+Wall3.Box.Size.Set(LayerGame.Width-20,20);
+LayerGame.Add(Player);
+LayerGame.Add(Wall);
+LayerGame.Add(Wall1);
+LayerGame.Add(Wall2);
+LayerGame.Add(Wall3);
+SceneGame.Add(LayerGame);
+
+var Editor = true;
+var isEditor = true;
+var zoom = 1;
+var Time = 0;
+function Render()
+{  
+    if(Editor && isEditor)
+    { Wive2D.Zoom = zoom; EditorVisible(true); SceneGame.SetVisible(false); isEditor = false; }
+    else if(isEditor)
+    { zoom = Wive2D.Zoom; Wive2D.Zoom = 1; EditorVisible(false); SceneGame.SetVisible(true); isEditor = false; }
+    
+    if(Wive2D.isKeyPress('ESC')) 
+    { 
+        isEditor = true;
+        if(!Editor)
+            Editor = true; 
+        else 
+            Editor = false; 
+    } 
+    
+
+    if(Editor)
+    {
+        onMouse();
+        onKey();
+        Engine.Render(SceneEditor);
+
+        for(var i = 0; i < AINeurons.length; i++)
+            { AINeurons[i].N2D.Name.Draw(); }
+            
+    }
+    else
+    {
+        Wive2D.isKeyPress('DEL');
+        
+            for(var i = 0; i < AINeurons.length; i++)
+                switch(EventsNeuron[AINeurons[i]._Event])
+                {
+                    case "SensorR": 
+                    if(Player.isCollision(Wall, LayerGame.Camera.Position))  
+                        AINeurons[i].Calc();
+                    break;
+        
+                    case "SensorL":
+                    if(Player.isCollision(Wall1, LayerGame.Camera.Position)) 
+                        AINeurons[i].Calc();
+                    break;
+        
+                    case "SensorT":
+                    if(Player.isCollision(Wall2, LayerGame.Camera.Position))
+                        AINeurons[i].Calc();
+                    break;
+                    
+                    case "SensorD":
+                    if(Player.isCollision(Wall3, LayerGame.Camera.Position))
+                        AINeurons[i].Calc();
+                    break;
+                }
+               Time++;
+            for(var i = 0; i < AINeurons.length; i++)
+                switch(EventsNeuron[AINeurons[i]._Event])
+                {
+                    case "none": AINeurons[i].Calc(); break;
+                    case "Interval":  if(Time >= 1 * 60) { AINeurons[i].Calc(); /*console.clear();*/} break;
+                }
+                
+            
+            if(Time >= 5*60)
+                Time = 0; 
+                
+            for(var i = 0; i < AINeurons.length; i++)
+                switch(EventsNeuron[AINeurons[i]._Event])
+                {
+                    case "MoveR": 
+                    AINeurons[i].Calc();
+                    if(!Player.isCollision(Wall, LayerGame.Camera.Position))  
+                    { Player.Position.Move(AINeurons[i].Akson.Get(), 0); }
+                    break;
+        
+                    case "MoveL":
+                    AINeurons[i].Calc();
+                    if(!Player.isCollision(Wall1, LayerGame.Camera.Position)) 
+                    { Player.Position.Move(-AINeurons[i].Akson.Get(), 0); }
+                    break;
+        
+                    case "MoveT":
+                    AINeurons[i].Calc();
+                    if(!Player.isCollision(Wall2, LayerGame.Camera.Position))
+                    { Player.Position.Move(0, -AINeurons[i].Akson.Get()); }
+                    break;
+                    
+                    case "MoveD":
+                    AINeurons[i].Calc();
+                    if(!Player.isCollision(Wall3, LayerGame.Camera.Position))
+                    { Player.Position.Move(0, AINeurons[i].Akson.Get()); }
+                    break;
+                }
+                    
+        Engine.Render(SceneGame);
+    }
+};
+
+window.addEventListener('resize', onResize, false);
+
+
+function onResize() 
+{
+    _Background.SetSize(window.innerWidth,window.innerHeight);
+    LayerGame.SetSize(window.innerWidth,window.innerHeight);
+    _Layer.SetSize(window.innerWidth,window.innerHeight);
+    _Layer1.SetSize(window.innerWidth,window.innerHeight);
+    //Layer.Camera.Focus(Player,Vector2D(0,0));
+    _Background.Fill('rgb(40,40,40)');
+    ResizeEditor();
+};
+</script>
+</body>
+</html>
