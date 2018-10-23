@@ -1,18 +1,18 @@
 Wive2D.N2D = function(_layer)
 {
     this.Layer = _layer;
-    
+
     this.Name = new Wive2D.Text(_layer);
     this.Name.text = 'default';
     this.Name.color = '#FFF';
-    this.Name.align = "center"; 
-    
+    this.Name.align = "center";
+
     this.Node = new Wive2D.Circle();
     this.Node.Set("#4cf","#999");
     this.Node.Position.Set(0, 0);
     this.Node.Size.Set(40,3);
     this.Node.Box.Size.Set(80,80);
-    
+
     if(_layer)
     _layer.Add(this.Node);
 }
@@ -31,7 +31,7 @@ Wive2D.N2D.prototype =
                     Name:{
                             text: this.Name.text
                         },
-                    
+
                     Node:{
                             Position: this.Node.Position,
                             Color: this.Node.Color,
@@ -50,8 +50,8 @@ Wive2D.N2D.prototype =
     {
         for(var i = 0; i < this.Layer.Length(); i++)
             if(this.Layer.Get(i).id == this.Node.id)
-            { this.Layer.Remove(i); break; }  
-            
+            { this.Layer.Remove(i); break; }
+
         if(_flag)
             delete this.Name;
     },
@@ -77,8 +77,8 @@ Wive2D.S2D = function(_layer)
     this.Name = new Wive2D.Text(_layer);
     this.Name.text = 'default';
     this.Name.color = '#FFF';
-    this.Name.align = "center"; 
-    
+    this.Name.align = "center";
+
     this.Node = new Wive2D.Circle();
     this.Node.Set("#0f0","#999");
     this.Node.Position.Set(0, 0);
@@ -89,17 +89,17 @@ Wive2D.S2D = function(_layer)
     this.sLine.id = this.Node.id;
     this.sLine.Position = this.Node.Position;
     this.sLine.Visible = false;
-    
+
     this.jLine = new Wive2D.exLine();
     this.jLine.id = this.Node.id;
     this.jLine.Color = "#f00";
     this.jLine.StokeSize = 2;
     this.jLine.Position = this.Node.Position;
     this.jLine.Visible = false;
-    
+
     if(_layer)
     {
-        _layer.Add(this.jLine);        
+        _layer.Add(this.jLine);
         _layer.Add(this.sLine);
         _layer.Add(this.Node);
     }
@@ -112,7 +112,7 @@ Wive2D.S2D.prototype =
         this.Name.text = _obj.Name.text;
         this.SetPosition(_obj.Node.Position.x, _obj.Node.Position.y);
         this.Node.Set(_obj.Node.Color, _obj.Node.SColor);
-    },  
+    },
     object: function()
     {
         return {
@@ -120,7 +120,7 @@ Wive2D.S2D.prototype =
                             text:this.Name.text,
                             Position: this.Name.Position
                         },
-                    
+
                     Node:{
                             Position:this.Node.Position,
                             Color: this.Node.Color,
@@ -133,7 +133,7 @@ Wive2D.S2D.prototype =
         this.Remove(0);
         this.Layer = _layer;
         this.Name.SetLayer(_layer);
-        _layer.Add(this.jLine);        
+        _layer.Add(this.jLine);
         _layer.Add(this.sLine);
         _layer.Add(this.Node);
     },
@@ -142,7 +142,7 @@ Wive2D.S2D.prototype =
         for(var i = 0; i < this.Layer.Length(); i++)
             if(this.Layer.Get(i).id == this.jLine.id)
             { this.Layer.Remove(i, 3); break; }
-        
+
         if(_flag)
             delete this.Name;
     },
@@ -177,12 +177,12 @@ Wive2D.S2D.prototype =
         if(this.sLine.Position.y > this.sLine.EndPosition.y)
             this.sLine.ControlPosition.Set(this.sLine.Position.x-(this.sLine.Position.x-this.sLine.EndPosition.x)/2,this.sLine.EndPosition.y+(this.sLine.Position.y - this.sLine.EndPosition.y));
         else
-            this.sLine.ControlPosition.Set(this.sLine.Position.x-(this.sLine.Position.x-this.sLine.EndPosition.x)/2,this.sLine.EndPosition.y+(this.sLine.Position.y - this.sLine.EndPosition.y));   
-    
+            this.sLine.ControlPosition.Set(this.sLine.Position.x-(this.sLine.Position.x-this.sLine.EndPosition.x)/2,this.sLine.EndPosition.y+(this.sLine.Position.y - this.sLine.EndPosition.y));
+
         if(this.jLine.Position.y > this.jLine.EndPosition.y)
             this.jLine.ControlPosition.Set(this.jLine.Position.x-(this.jLine.Position.x-this.jLine.EndPosition.x)/2,this.jLine.EndPosition.y+(this.jLine.Position.y - this.jLine.EndPosition.y));
         else
-            this.jLine.ControlPosition.Set(this.jLine.Position.x-(this.jLine.Position.x-this.jLine.EndPosition.x)/2,this.jLine.EndPosition.y+(this.jLine.Position.y - this.jLine.EndPosition.y));         
+            this.jLine.ControlPosition.Set(this.jLine.Position.x-(this.jLine.Position.x-this.jLine.EndPosition.x)/2,this.jLine.EndPosition.y+(this.jLine.Position.y - this.jLine.EndPosition.y));
     },
     GetPosition: function()
     {
@@ -200,7 +200,7 @@ Wive2D.Akson = function(_id)
     this.Synapses = [];
     this.Out = 0;
 }
-Wive2D.Akson.prototype = 
+Wive2D.Akson.prototype =
 {
     constructor: Wive2D.Akson,
     object: function()
@@ -213,7 +213,7 @@ Wive2D.Akson.prototype =
                 Synapses: _Synapses,
                 Out: this.Out
                };
-    },    
+    },
     Join: function(_synapse) { this.Synapses.push(_synapse); },
     Get: function() { var _out = this.Out; this.Out = 0; return _out; },
     Detach: function(_id)
@@ -226,7 +226,7 @@ Wive2D.Akson.prototype =
     {
         for(var i = 0; i < this.Synapses.length; i++)
           this.Synapses[i].DetachAkson();
-        
+
         this.Synapses.splice(0, this.Synapses.length);
     },
     Calc: function(_value)
@@ -245,10 +245,10 @@ Wive2D.Synapse = function(_id, _distance, _polarity, _layer)
     this.Polarity = _polarity;
     this.Neuron = 0;
     this.Akson = 0;
-    
+
     this.S2D = new Wive2D.S2D(_layer);
 }
-Wive2D.Synapse.prototype = 
+Wive2D.Synapse.prototype =
 {
     constructor: Wive2D.Synapse,
     copy: function(_obj)
@@ -292,7 +292,7 @@ Wive2D.Synapse.prototype =
         this.S2D.JoinAkson(_neuron.N2D.Node.Position);
     },
     DetachNeuron: function()
-    { 
+    {
         this.Neuron = 0;
         this.S2D.DetachNeuron();
     },
@@ -303,10 +303,10 @@ Wive2D.Synapse.prototype =
     },
     Remove: function()
     {
-        if(this.Neuron) 
-            this.Neuron.Detach(this.id); 
-        if(this.Akson) 
-            this.Akson.Detach(this.id); 
+        if(this.Neuron)
+            this.Neuron.Detach(this.id);
+        if(this.Akson)
+            this.Akson.Detach(this.id);
         this.S2D.Remove();
         delete this.S2D;
     },
@@ -318,7 +318,7 @@ Wive2D.Synapse.prototype =
 
         _Out = this.In * ((1 / this.Distance) * this.Polarity);
         if(this.In > 0.0) this.Atachment(this.In/1000);
-        
+
         this.In = 0;
         return _Out;
     },
@@ -339,7 +339,7 @@ Wive2D.Neuron = function(_id, _layer)
     this.Akson = new Wive2D.Akson(_id);
     this.N2D = new Wive2D.N2D(_layer);
 }
-Wive2D.Neuron.prototype = 
+Wive2D.Neuron.prototype =
 {
     constructor: Wive2D.Neuron,
     copy: function(_obj)
@@ -377,9 +377,9 @@ Wive2D.Neuron.prototype =
     {
         for(var i = 0; i < this.Synapses.length; i++)
             this.Synapses[i].DetachNeuron();
-        
+
         this.Synapses.splice(0, this.Synapses.length);
-        
+
         this.Akson.Remove();
         this.N2D.Remove();
         delete this.Akson;
@@ -391,27 +391,31 @@ Wive2D.Neuron.prototype =
         {
             case 'R': this.Sum = Random(1,this.Limit)-1; break;
             case 'G': this.Sum = this.Limit; break;
-            case 'O': 
+            case 'O':
                 for(var i = 0; i < this.Synapses.length; i++)
+                {
                     this.Sum += this.Synapses[i].Calc();
-                    if(this.Sum > this.Limit) this.Sum = this.Limit;
-                    else if(this.Sum < -this.Limit) this.Sum = -this.Limit;
+                    if(this.Synapses[i].Polarity > 0) this.Synapses[i].Atachment(this.Limit/1000);
+                }
+
+                if(this.Sum > this.Limit) this.Sum = this.Limit;
+                else if(this.Sum < -this.Limit) this.Sum = -this.Limit;
             break;
         }
-        
+
         //if(this.N2D.Name.text == "R" || this.N2D.Name.text == "L")
         //    log(this.N2D.Name.text + " " + this.Sum);
-        
-        if(this.Sum >= this.Limit) { this.Sum -= this.Limit/1000; this.Akson.Calc(1); }
-        else if(this.Sum > 0) { this.Akson.Calc(this.Sum); if(this.Sum > this.Limit/1000) this.Sum -= this.Limit/1000}
+
+        if(this.Sum == this.Limit) {  this.Akson.Calc(1); this.Sum = 0; }
+        else if(this.Sum > 0) { this.Akson.Calc(this.Sum); }
         else if(this.Sum < 0)
         {
             for(var i = 0; i < this.Synapses.length; i++)
-                this.Synapses[i].Detachment(this.Limit/1000); 
+              if(this.Synapses[i].Polarity > 0)
+                this.Synapses[i].Detachment(this.Limit/1000);
             this.Akson.Calc(0);
-            this.Sum += this.Limit/1000;
         }
         //else this.Akson.Calc(0);
-        
+
     }
 }

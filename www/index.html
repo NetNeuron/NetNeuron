@@ -13,14 +13,14 @@
 
 	<title>Wive2D Engine</title>
 	</head>
-	
+
 <body id = "Game" onload = "Wive2D.SetFuncRender(Render);">
 
 <script type="text/javascript">
 
 var Engine = new Wive2D.Engine();
 var SceneGame = new Wive2D.Scene();
-var LayerGame= new Wive2D.Layer(window.innerWidth,window.innerHeight, -1003); 
+var LayerGame= new Wive2D.Layer(window.innerWidth,window.innerHeight, -1003);
 InitEditor();
 
 var Player = new Wive2D.Circle();
@@ -60,22 +60,23 @@ var Editor = true;
 var isEditor = true;
 var zoom = 1;
 var Time = 0;
+
 function Render()
-{  
+{
     if(Editor && isEditor)
     { Wive2D.Zoom = zoom; EditorVisible(true); SceneGame.SetVisible(false); isEditor = false; }
     else if(isEditor)
     { zoom = Wive2D.Zoom; Wive2D.Zoom = 1; EditorVisible(false); SceneGame.SetVisible(true); isEditor = false; }
-    
-    if(Wive2D.isKeyPress('ESC')) 
-    { 
+
+    if(Wive2D.isKeyPress('ESC'))
+    {
         isEditor = true;
         if(!Editor)
-            Editor = true; 
-        else 
-            Editor = false; 
-    } 
-    
+            Editor = true;
+        else
+            Editor = false;
+    }
+
 
     if(Editor)
     {
@@ -85,30 +86,30 @@ function Render()
 
         for(var i = 0; i < AINeurons.length; i++)
             { AINeurons[i].N2D.Name.Draw(); }
-            
+
     }
     else
     {
         Wive2D.isKeyPress('DEL');
-        
+
             for(var i = 0; i < AINeurons.length; i++)
                 switch(EventsNeuron[AINeurons[i]._Event])
                 {
-                    case "SensorR": 
-                    if(Player.isCollision(Wall, LayerGame.Camera.Position))  
+                    case "SensorR":
+                    if(Player.isCollision(Wall, LayerGame.Camera.Position))
                         AINeurons[i].Calc();
                     break;
-        
+
                     case "SensorL":
-                    if(Player.isCollision(Wall1, LayerGame.Camera.Position)) 
+                    if(Player.isCollision(Wall1, LayerGame.Camera.Position))
                         AINeurons[i].Calc();
                     break;
-        
+
                     case "SensorT":
                     if(Player.isCollision(Wall2, LayerGame.Camera.Position))
                         AINeurons[i].Calc();
                     break;
-                    
+
                     case "SensorD":
                     if(Player.isCollision(Wall3, LayerGame.Camera.Position))
                         AINeurons[i].Calc();
@@ -121,39 +122,39 @@ function Render()
                     case "none": AINeurons[i].Calc(); break;
                     case "Interval":  if(Time >= 1 * 60) { AINeurons[i].Calc(); /*console.clear();*/} break;
                 }
-                
-            
+
+
             if(Time >= 5*60)
-                Time = 0; 
-                
+                Time = 0;
+
             for(var i = 0; i < AINeurons.length; i++)
                 switch(EventsNeuron[AINeurons[i]._Event])
                 {
-                    case "MoveR": 
+                    case "MoveR":
                     AINeurons[i].Calc();
-                    if(!Player.isCollision(Wall, LayerGame.Camera.Position))  
+                    if(!Player.isCollision(Wall, LayerGame.Camera.Position))
                     { Player.Position.Move(AINeurons[i].Akson.Get(), 0); }
                     break;
-        
+
                     case "MoveL":
                     AINeurons[i].Calc();
-                    if(!Player.isCollision(Wall1, LayerGame.Camera.Position)) 
+                    if(!Player.isCollision(Wall1, LayerGame.Camera.Position))
                     { Player.Position.Move(-AINeurons[i].Akson.Get(), 0); }
                     break;
-        
+
                     case "MoveT":
                     AINeurons[i].Calc();
                     if(!Player.isCollision(Wall2, LayerGame.Camera.Position))
                     { Player.Position.Move(0, -AINeurons[i].Akson.Get()); }
                     break;
-                    
+
                     case "MoveD":
                     AINeurons[i].Calc();
                     if(!Player.isCollision(Wall3, LayerGame.Camera.Position))
                     { Player.Position.Move(0, AINeurons[i].Akson.Get()); }
                     break;
                 }
-                    
+
         Engine.Render(SceneGame);
     }
 };
@@ -161,7 +162,7 @@ function Render()
 window.addEventListener('resize', onResize, false);
 
 
-function onResize() 
+function onResize()
 {
     _Background.SetSize(window.innerWidth,window.innerHeight);
     LayerGame.SetSize(window.innerWidth,window.innerHeight);
