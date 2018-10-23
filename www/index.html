@@ -115,12 +115,14 @@ function Render()
                         AINeurons[i].Calc();
                     break;
                 }
+
                Time++;
+
             for(var i = 0; i < AINeurons.length; i++)
                 switch(EventsNeuron[AINeurons[i]._Event])
                 {
                     case "none": AINeurons[i].Calc(); break;
-                    case "Interval":  if(Time >= 1 * 60) { AINeurons[i].Calc(); /*console.clear();*/} break;
+                    case "Interval":  if(Time >= 5 * 60) { AINeurons[i].Calc(); /*console.clear();*/} break;
                 }
 
 

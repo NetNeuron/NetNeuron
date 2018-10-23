@@ -389,13 +389,21 @@ Wive2D.Neuron.prototype =
     {
         switch(this.Type)
         {
-            case 'R': this.Sum = Random(1,this.Limit)-1; break;
+            case 'R': this.Sum = Random(1,this.Limit+2)-1; break;
             case 'G': this.Sum = this.Limit; break;
             case 'O':
                 for(var i = 0; i < this.Synapses.length; i++)
                 {
-                    this.Sum += this.Synapses[i].Calc();
-                    if(this.Synapses[i].Polarity > 0) this.Synapses[i].Atachment(this.Limit/1000);
+                  if(this.Synapses[i].Polarity > 0)
+                  {
+                      var positive = this.Synapses[i].Calc();
+                      if(positive > 0) { this.Sum += positive; this.Synapses[i].Atachment(this.Limit/1000); }
+                  }
+                  else
+                  {
+                    var negativ = this.Synapses[i].Calc();
+                    if(negativ < 0) { this.Sum -= negativ; }
+                  }
                 }
 
                 if(this.Sum > this.Limit) this.Sum = this.Limit;
@@ -403,8 +411,8 @@ Wive2D.Neuron.prototype =
             break;
         }
 
-        //if(this.N2D.Name.text == "R" || this.N2D.Name.text == "L")
-        //    log(this.N2D.Name.text + " " + this.Sum);
+        // if(this.N2D.Name.text == "GenR" || this.N2D.Name.text == "GenL" || this.N2D.Name.text == "GenT" || this.N2D.Name.text == "GenD")
+        //     log(this.N2D.Name.text + " " + this.Sum);
 
         if(this.Sum == this.Limit) {  this.Akson.Calc(1); this.Sum = 0; }
         else if(this.Sum > 0) { this.Akson.Calc(this.Sum); }
@@ -412,7 +420,7 @@ Wive2D.Neuron.prototype =
         {
             for(var i = 0; i < this.Synapses.length; i++)
               if(this.Synapses[i].Polarity > 0)
-                this.Synapses[i].Detachment(this.Limit/1000);
+                this.Synapses[i].Detachment(this.Limit/10000);
             this.Akson.Calc(0);
         }
         //else this.Akson.Calc(0);
