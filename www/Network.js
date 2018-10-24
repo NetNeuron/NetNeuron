@@ -397,12 +397,12 @@ Wive2D.Neuron.prototype =
                   if(this.Synapses[i].Polarity > 0)
                   {
                       var positive = this.Synapses[i].Calc();
-                      if(positive > 0) { this.Sum += positive; this.Synapses[i].Atachment(this.Limit/1000); }
+                      if(positive > 0) { this.Sum += positive; }
                   }
                   else
                   {
-                    var negativ = this.Synapses[i].Calc();
-                    if(negativ < 0) { this.Sum -= negativ; }
+                      var negative = this.Synapses[i].Calc();
+                      if(negative < 0) { this.Sum -= negative; }
                   }
                 }
 
@@ -414,13 +414,23 @@ Wive2D.Neuron.prototype =
         // if(this.N2D.Name.text == "GenR" || this.N2D.Name.text == "GenL" || this.N2D.Name.text == "GenT" || this.N2D.Name.text == "GenD")
         //     log(this.N2D.Name.text + " " + this.Sum);
 
-        if(this.Sum == this.Limit) {  this.Akson.Calc(1); this.Sum = 0; }
-        else if(this.Sum > 0) { this.Akson.Calc(this.Sum); }
-        else if(this.Sum < 0)
+        if(this.Sum == this.Limit)
+        {
+          this.Akson.Calc(this.Sum);
+          this.Sum = 0;
+        }
+        else if(this.Sum > -0.1)
+        {
+          for(var i = 0; i < this.Synapses.length; i++)
+            if(this.Synapses[i].Polarity > 0)
+              this.Synapses[i].Atachment(this.Limit/1000);
+          this.Akson.Calc(this.Sum);
+        }
+        else if(this.Sum < -0.1)
         {
             for(var i = 0; i < this.Synapses.length; i++)
               if(this.Synapses[i].Polarity > 0)
-                this.Synapses[i].Detachment(this.Limit/10000);
+                this.Synapses[i].Detachment(this.Limit/1000);
             this.Akson.Calc(0);
         }
         //else this.Akson.Calc(0);
