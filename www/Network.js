@@ -242,7 +242,7 @@ Wive2D.Synapse = function(_id, _distance, _polarity, _layer)
     this.id = _id;
     this.In = 0;
     this.Distance = _distance;
-    this.Polarity = _polarity;
+    this.Polarity = 1;
     this.Neuron = 0;
     this.Akson = 0;
 
@@ -313,11 +313,11 @@ Wive2D.Synapse.prototype =
     Calc: function()
     {
         var _Out = 0;
-        if(this.In == 0) { /*this.Detachment(1/100000);*/ return _Out; }
+        if(this.In == 0) { this.Atachment(1/100000); return _Out; }
         if(this.Distance < 1) this.Distance = 1;
 
-        _Out = this.In * ((1 / this.Distance) * this.Polarity);
-        if(this.In > 0.0) this.Atachment(this.In/1000);
+        _Out = this.In * ((1 / this.Distance));
+        this.Atachment(1/1000);
 
         this.In = 0;
         return _Out;
@@ -389,51 +389,34 @@ Wive2D.Neuron.prototype =
     {
         switch(this.Type)
         {
-            case 'R': this.Sum = Random(1,this.Limit+2)-1; break;
-            case 'G': this.Sum = this.Limit; break;
+            case 'R':
+              this.Sum = Random(1,this.Limit+2)-1;
+              this.Akson.Calc(this.Sum);
+            break;
+            case 'G':
+              this.Sum = this.Limit;
+              this.Akson.Calc(this.Sum);
+            break;
             case 'O':
                 for(var i = 0; i < this.Synapses.length; i++)
-                {
-                  if(this.Synapses[i].Polarity > 0)
-                  {
-                      var positive = this.Synapses[i].Calc();
-                      if(positive > 0) { this.Sum += positive; }
-                  }
-                  else
-                  {
-                      var negative = this.Synapses[i].Calc();
-                      if(negative < 0) { this.Sum -= negative; }
-                  }
-                }
+                    this.Sum += this.Synapses[i].Calc();
 
-                if(this.Sum > this.Limit) this.Sum = this.Limit;
-                else if(this.Sum < -this.Limit) this.Sum = -this.Limit;
+                if(this.Sum >= this.Limit) { this.Akson.Calc(this.Limit); this.Sum = 0; }
+                else if(this.Sum > 0) { this.Akson.Calc(this.Sum); this.Sum -= 1/1000;}
+                else if(this.Sum < 0)
+                {
+                  for(var i = 0; i < this.Synapses.length; i++)
+                    if(this.Synapses[i].Polarity > 0)
+                      this.Synapses[i].Detachment(1/100);
+                  this.Sum = 0;
+                }
+                else this.Akson.Calc(0);
             break;
         }
 
         // if(this.N2D.Name.text == "GenR" || this.N2D.Name.text == "GenL" || this.N2D.Name.text == "GenT" || this.N2D.Name.text == "GenD")
         //     log(this.N2D.Name.text + " " + this.Sum);
 
-        if(this.Sum == this.Limit)
-        {
-          this.Akson.Calc(this.Sum);
-          this.Sum = 0;
-        }
-        else if(this.Sum > -0.1)
-        {
-          for(var i = 0; i < this.Synapses.length; i++)
-            if(this.Synapses[i].Polarity > 0)
-              this.Synapses[i].Atachment(this.Limit/1000);
-          this.Akson.Calc(this.Sum);
-        }
-        else if(this.Sum < -0.1)
-        {
-            for(var i = 0; i < this.Synapses.length; i++)
-              if(this.Synapses[i].Polarity > 0)
-                this.Synapses[i].Detachment(this.Limit/1000);
-            this.Akson.Calc(0);
-        }
-        //else this.Akson.Calc(0);
 
     }
 }

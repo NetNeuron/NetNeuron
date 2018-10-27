@@ -1,7 +1,7 @@
-var EventsNeuron = ["none", "Interval", "SensorR", "SensorL", "SensorT", "SensorD", "MoveR", "MoveL", "MoveT", "MoveD"]; 
-var SceneEditor = 0; 
+var EventsNeuron = ["none", "Interval", "SensorR", "SensorL", "SensorT", "SensorD", "MoveR", "MoveL", "MoveT", "MoveD"];
+var SceneEditor = 0;
 var _Background = 0;
-var _Layer = 0; 
+var _Layer = 0;
 var _Layer1 = 0;
 var Lable = 0;
 var TableNeuron = 0;
@@ -38,7 +38,7 @@ function EditorVisible(_visible)
     {
         TableNeuron.Visible(_visible);
         TableSynapse.Visible(_visible);
-    }        
+    }
     ButtonAddN.Visible(_visible);
     ButtonAddS.Visible(_visible);
     ButtonSave.Visible(_visible);
@@ -51,17 +51,17 @@ function ResizeEditor()
     ButtonAddN.SetPosition(window.innerWidth/2-100-50, 25);
     ButtonAddS.SetPosition(window.innerWidth/2-100+50, 25);
     ButtonSave.SetPosition(window.innerWidth/2+100-50, 25);
-    ButtonLoad.SetPosition(window.innerWidth/2+100+50, 25);    
+    ButtonLoad.SetPosition(window.innerWidth/2+100+50, 25);
 }
 
 function InitEditor()
 {
-    SceneEditor = new Wive2D.Scene(); 
+    SceneEditor = new Wive2D.Scene();
     _Background = new Wive2D.Layer(window.innerWidth,window.innerHeight,-1005);
     _Background.Fill('rgb(40,40,40)');
     //_Background.SetAlpha(0.5);
 
-    _Layer = new Wive2D.Layer(window.innerWidth,window.innerHeight, -1001); 
+    _Layer = new Wive2D.Layer(window.innerWidth,window.innerHeight, -1001);
     _Layer1 = new Wive2D.Layer(window.innerWidth,window.innerHeight, -1002);
 
     TableNeuron = new Wive2D.Table(20,45,0);
@@ -86,7 +86,7 @@ function InitEditor()
     SelectType.Add("Generated");
     SelectType.Add("Out");
     SelectType.Add("Random");
-    
+
     for(var i = 0; i < EventsNeuron.length; i++)
         SelectEvent.Add(EventsNeuron[i]);
 
@@ -131,13 +131,13 @@ function InitEditor()
     ButtonSave = new Wive2D.Button(window.innerWidth/2+100-50, 25, 100, 25, "Save", 1);
     ButtonLoad = new Wive2D.Button(window.innerWidth/2+100+50, 25, 100, 25, "Load", 1);
     SDM = Vector2D(0, 0);
-    
+
     ButtonAddN.onClick(function(){ isAddNeuron = true; });
     ButtonAddS.onClick(function(){ isAddSynapse = true; });
-    
+
     ButtonSave.onClick(function(){ Save("Network"); });
-    ButtonLoad.onClick(function(){ Load("Network"); }); 
-    
+    ButtonLoad.onClick(function(){ Load("Network"); });
+
     ButtonJoinA.onClick(function(){ isJoinA = true; });
     ButtonJoinN.onClick(function(){ isJoinN = true; });
 
@@ -166,7 +166,7 @@ function InitEditor()
     InputPolarity.onChange(function(){
         if(idSelectedS != -1)
         {
-            AISynapses[idSelectedS].Polarity =  parseInt(InputPolarity.Get()); 
+            AISynapses[idSelectedS].Polarity =  parseInt(InputPolarity.Get());
             if(AISynapses[idSelectedS].Polarity > 0)
                 AISynapses[idSelectedS].S2D.Node.Color = "#0f0";
             else
@@ -193,23 +193,23 @@ function onMouse()
     if(Wive2D.isMouseClick('LEFT') && !isProperty)
     {
         if(isAddNeuron)
-        { 
-            AddNeuron(Wive2D.Mouse.x, Wive2D.Mouse.y); 
-            isAddNeuron = false; 
+        {
+            AddNeuron(Wive2D.Mouse.x, Wive2D.Mouse.y);
+            isAddNeuron = false;
         }
         else if(isAddSynapse)
-        { 
-            AddSynapse(Wive2D.Mouse.x, Wive2D.Mouse.y); 
-            isAddSynapse = false; 
-        } 
-        
+        {
+            AddSynapse(Wive2D.Mouse.x, Wive2D.Mouse.y);
+            isAddSynapse = false;
+        }
+
         if(isJoinN)
         {
             EventsNeurons();
             SelectNeuron(idSelected);
-            if(idSelected != -1 && idSelectedS != -1) 
+            if(idSelected != -1 && idSelectedS != -1)
                 AISynapses[idSelectedS].JoinNeuron(AINeurons[idSelected]);
-            isJoinN = false;  
+            isJoinN = false;
             EventsSynapse();
             SelectSynapse(idSelectedS);
         }
@@ -217,9 +217,9 @@ function onMouse()
         {
             EventsNeurons();
             SelectNeuron(idSelected);
-            if(idSelected != -1 && idSelectedS != -1) 
+            if(idSelected != -1 && idSelectedS != -1)
                 AISynapses[idSelectedS].JoinAkson(AINeurons[idSelected]);
-            isJoinA = false; 
+            isJoinA = false;
             EventsSynapse();
             SelectSynapse(idSelectedS);
         }
@@ -234,14 +234,14 @@ function onMouse()
     }
     else if(Wive2D.isMouseDown('LEFT') && !isProperty)
     {
-    
+
         if(idSelected != -1)
             MoveNeuron(idSelected, Wive2D.Mouse);
         else if(idSelectedS != -1)
             MoveSynapse(idSelectedS, Wive2D.Mouse);
         else
             MoveCamera(Wive2D.Mouse);
-        
+
     }
     else if(Wive2D.isMouseWheel('DOWN') && !isProperty)
     {
@@ -260,7 +260,7 @@ function onMouse()
 function EventCamera()
 {
     var OPosition = _Layer.Camera.Position;
-    SDM = Vector2D(OPosition.x - Wive2D.Mouse.x, OPosition.y - Wive2D.Mouse.y); //дистанция от мыши до точки ( для правильного перемещения )   
+    SDM = Vector2D(OPosition.x - Wive2D.Mouse.x, OPosition.y - Wive2D.Mouse.y); //дистанция от мыши до точки ( для правильного перемещения )
 }
 
 function MoveCamera(_pos)
@@ -277,7 +277,7 @@ function AddNeuron(_x, _y)
     Neuron.N2D.SetPosition((_x-_Layer.Camera.Position.x)/Wive2D.Zoom, (_y-_Layer.Camera.Position.y)/Wive2D.Zoom);
     Neuron.N2D.Node.SColor = "#FF0";
     AINeurons.push(Neuron);
-    
+
     InputNameN.Set(Neuron.N2D.Name.text);
     switch(Neuron.Type)
     {
@@ -285,9 +285,9 @@ function AddNeuron(_x, _y)
         case 'O': SelectType.Set(1); break;
         case 'R': SelectType.Set(2); break;
     }
-    
+
     SelectEvent.Set(Neuron.Event);
-    
+
     InputLimit.Set(Neuron.Limit);
     TableNeuron.Visible(1);
 };
@@ -300,7 +300,7 @@ function AddSynapse(_x, _y)
     Synapse.S2D.SetPosition((_x-_Layer.Camera.Position.x)/Wive2D.Zoom, (_y-_Layer.Camera.Position.y)/Wive2D.Zoom);
     Synapse.S2D.Node.SColor = "#FF0";
     AISynapses.push(Synapse);
-    
+
     InputNameS.Set(Synapse.S2D.Name.text);
     InputPolarity.Set(Synapse.Polarity);
     InputDistance.Set(Synapse.Distance);
@@ -310,7 +310,7 @@ function AddSynapse(_x, _y)
 function SelectNeuron(_id)
 {
     if(_id == -1) return;
-    
+
     TableSynapse.Visible(0);
     AINeurons[_id].N2D.Node.SColor = "#FF0";
     InputNameN.Set(AINeurons[_id].N2D.Name.text);
@@ -320,12 +320,12 @@ function SelectNeuron(_id)
         case 'O': SelectType.Set(1); break;
         case 'R': SelectType.Set(2); break;
     }
-    
+
     SelectEvent.Set(AINeurons[_id]._Event);
-        
+
     InputLimit.Set(AINeurons[_id].Limit);
-    TableNeuron.Visible(1); 
-    
+    TableNeuron.Visible(1);
+
     var OPosition = AINeurons[_id].N2D.GetPosition();
     SDM = Vector2D(OPosition.x - Wive2D.Mouse.x, OPosition.y - Wive2D.Mouse.y); //дистанция от мыши до точки ( для правильного перемещения )
 };
@@ -346,14 +346,14 @@ function DeleteNeuron(_id)
      TableNeuron.Visible(0);
      idSelected = -1;
 }
- 
+
 function EventsNeurons()
 {
     var ids = -1;
     for(var i = 0; i < AINeurons.length; i++)
-        if(AINeurons[i].N2D.OnObject()) { ids = i; } 
+        if(AINeurons[i].N2D.OnObject()) { ids = i; }
         else { AINeurons[i].N2D.Node.SColor = "#999"; }
-    
+
     idSelected = ids;
     if(idSelected == -1) { TableNeuron.Visible(0); }
 };
@@ -361,15 +361,15 @@ function EventsNeurons()
 function SelectSynapse(_id)
 {
     if(_id == -1) return;
-    
+
     TableNeuron.Visible(0);
     var Synapse = AISynapses[_id];
     Synapse.S2D.Node.SColor = "#FF0";
     InputNameS.Set(Synapse.S2D.Name.text);
     InputPolarity.Set(Synapse.Polarity);
     InputDistance.Set(Synapse.Distance);
-    TableSynapse.Visible(1); 
-    
+    TableSynapse.Visible(1);
+
     var OPosition = Synapse.S2D.GetPosition();
     SDM = Vector2D(OPosition.x - Wive2D.Mouse.x, OPosition.y - Wive2D.Mouse.y); //дистанция от мыши до точки ( для правильного перемещения )
 };
@@ -380,7 +380,7 @@ function SelectSynapse(_id)
      var CurrentPosition = Vector2D(_pos.x+SDM.x, _pos.y+SDM.y);
      AISynapses[_id].S2D.SetPosition(CurrentPosition.x, CurrentPosition.y);
  }
- 
+
  function DeleteSynapse(_id)
  {
     if(_id == -1) return;
@@ -390,14 +390,14 @@ function SelectSynapse(_id)
      TableSynapse.Visible(0);
      idSelectedS = -1;
  }
- 
+
 function EventsSynapse()
 {
     var ids = -1;
     for(var i = 0; i < AISynapses.length; i++)
-        if(AISynapses[i].S2D.OnObject()) { ids = i; } 
+        if(AISynapses[i].S2D.OnObject()) { ids = i; }
         else { AISynapses[i].S2D.Node.SColor = "#999"; }
-    
+
     idSelectedS = ids;
     if(idSelected == -1 && idSelectedS == -1) { TableSynapse.Visible(0); }
 };
@@ -408,7 +408,7 @@ function Save(_name)
         url: "Save.php",
         data: {resave:1,name:_name,countN:AINeurons.length,countS:AISynapses.length,json:0},
         async: false});
-    
+
     for(var i = 0; i < AINeurons.length; i++)
     {
         var str = JSON.stringify(AINeurons[i].object());
@@ -438,16 +438,16 @@ function Load(_name)
     }).responseText;
 
     eval(Text);
-   
+
     for(var i = 0; i < _jsonN.length; i++)
     {
         AINeurons[i] = new Wive2D.Neuron(0, _Layer);
         AINeurons[i].copy(_jsonN[i]);
         if(_jsonN[i].id > countAdd) countAdd = _jsonN[i].id;
     }
-    
+
     _jsonN.splice(0,_jsonN.length);
-    
+
     for(var i = 0; i < _jsonS.length; i++)
     {
         AISynapses[i] = new Wive2D.Synapse(0, 1, 1, _Layer1);

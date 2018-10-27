@@ -120,11 +120,12 @@ function Render()
 
             for(var i = 0; i < AINeurons.length; i++)
                 switch(EventsNeuron[AINeurons[i]._Event])
-                {
-                    case "none": AINeurons[i].Calc(); break;
-                    case "Interval":  if(Time >= 3 * 60) { AINeurons[i].Calc(); /*console.clear();*/} break;
-                }
+                    { case "none": AINeurons[i].Calc(); break; }
 
+						if(Time >= 3 * 60)
+							for(var i = 0; i < AINeurons.length; i++)
+	                switch(EventsNeuron[AINeurons[i]._Event])
+	                { case "Interval":  AINeurons[i].Calc(); /*console.clear();*/  break; }
 
             if(Time >= 3*60)
                 Time = 0;
