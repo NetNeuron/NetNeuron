@@ -313,11 +313,10 @@ Wive2D.Synapse.prototype =
     Calc: function()
     {
         var _Out = 0;
-        if(this.In == 0) { this.Atachment(1/100000); return _Out; }
+        if(this.In == 0) { this.Detachment(1/100000); return _Out; }
         if(this.Distance < 1) this.Distance = 1;
 
         _Out = this.In * ((1 / this.Distance));
-        this.Atachment(1/1000);
 
         this.In = 0;
         return _Out;
@@ -325,7 +324,7 @@ Wive2D.Synapse.prototype =
     Atachment: function(_value)
     { if(this.Distance > 1) this.Distance -= _value; },
     Detachment: function(_value)
-    { if(this.Polarity > 0) this.Distance += _value; }
+    { this.Distance += _value; }
 }
 
 Wive2D.Neuron = function(_id, _layer)
@@ -399,15 +398,19 @@ Wive2D.Neuron.prototype =
             break;
             case 'O':
                 for(var i = 0; i < this.Synapses.length; i++)
-                    this.Sum += this.Synapses[i].Calc();
+                    this.Sum *= this.Synapses[i].Calc();
 
-                if(this.Sum >= this.Limit) { this.Akson.Calc(this.Limit); this.Sum = 0; }
-                else if(this.Sum > 0) { this.Akson.Calc(this.Sum); this.Sum -= 1/1000;}
+                if(this.Sum >= this.Limit)
+                {
+                  this.Akson.Calc(this.Limit);
+                  this.Sum = 0;
+                }
+                else if(this.Sum > 0) { this.Akson.Calc(this.Sum); }
                 else if(this.Sum < 0)
                 {
                   for(var i = 0; i < this.Synapses.length; i++)
-                    if(this.Synapses[i].Polarity > 0)
-                      this.Synapses[i].Detachment(1/100);
+                    this.Synapses[i].Detachment(1/1000);
+                  this.Akson.Calc(0);
                   this.Sum = 0;
                 }
                 else this.Akson.Calc(0);
